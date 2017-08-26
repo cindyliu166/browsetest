@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>h5拉起钱包支付测试页面</title>
+</head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.3.2.min.css">
+
+<body>
+<div data-role="page">
+    <div data-role="content" class="login-wrap">
+        <div class="login-input-box">
+            <p>钱包支付测试页面</p>
+            <form>
+                <div id="radio">
+                    <input type="radio" id="radio1" name="radio" value="0"><label for="radio1">开发环境</label>
+                    <input type="radio" id="radio2" name="radio" checked="checked" value="1"><label for="radio2">生产环境</label>
+                </div>
+            </form>
+            <div class="chose">
+                <a onclick="pay()" class="login">生成订单信息</a>
+            </div>
+            <div class="chose">
+                <a href="${urldata}" class="login">支付</a>
+            </div>
+        </div>
+    </div>
+    <div style="text-align:center;margin:10px 0; font:normal 14px/24px 'MicroSoft YaHei';">
+    </div>
+</div>
+<script src="js/jquery.js"></script>
+<script src="js/jquery.mobile-1.3.2.min.js"></script>
+<script src="js/jsencrypt.js"></script>
+
+</body>
+<script type="text/javascript">
+    var it = 0;
+    var mytext;
+    var mpayid = document.getElementById("payid");
+    var morderid = document.getElementById("order");
+
+    var mAppId = "fdji3ro29k";
+    var mAppName = "WifiPay Demo";
+    var mOpenId = "ff80808157b876470157e5b464790c42";
+    var mPackageName = "com.example.test";
+    var mGoodsName = "Iphone7";
+    var mOrderAmount = "0.01";
+    var mMerchantOrderNo = guid().toString().replace(/-/g, "");
+    var mNotifyUrl = "http://notify.msp.hk/notify.htm";
+
+    var mMerchantNo = "";
+    //正式
+    var mMerchantNo2 = "540506";
+    var privateKey = "MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDbODPX+TrymksM5+aRF3K5b/cDT+fDq5GKfgGlZO8MlgEG4UpOEh097UYIYrWEzBQs53MDn3dIwlMt4X+4FuKcECG3+drZ3Ehzh68qDak+q/2pIiEb0QfdCULY8Xz3TIoN0EKnCCVoHkHo3+Vel3uaUtlU74bnB0CCw1jGWdJOSeEpUiU5MjujjyzYbOVsz4AdzbmEfZFB8e+mSsM7zjcriyUponkMSXBKIiDQehKn0YLp39N2sJrpG/2SOcZnPh3wc/k6OtJP52CHVMDjrB4wTdf6njiqntGub+nuiIJDDGl+4HzahVfQ5IruMbWThRQzUC+KF0Q2tIFIMc0XuXfJAgMBAAECggEBALUXFmyg67shDkJZBzRwREs/XLQVvAT9o7reIIn6eSbSe4KtdO5NNG7FpQakVAKhe0Ek6PPjNWybao8KKrFt5kC5asFJ2yoBOLCHM4HvyxGEjoS7NtJ9uJs1XU1NH8hCKAEFOyo0JoJ+DEBNRHMBfA+dxP7O54fNi9L5gEpKRNp50ePm20H5m2rHRu6nhOloAJZA+jXog3Yc2283Bnjx1PwpkP8LZypC+TodIOx3aZMRoXYSz6BRia8ylar1tr2Y8oJoOV8ENWGp6z0tj/YH/Cwc9jYHlHJWcMdzkTmlohwAiJmsFjRAsn8ognhmHoDFplaWM7Zlof5AhNSDXRwdHYkCgYEA7/dL9f3M0ArdfutBmx67O1l48HsAUG/O8dX49oVoCZI+91C/NyQ0r1A6iu9qjSvmIPBmbIOeGH0kRbl4BwRGF1j1wVB2rgl5FFf5oYs6TPvgGR9losvd4Bk3UOsua9nUkpmHOE/6ONZYGo2PhpYRhTc5/pOMW7jEW0UgicJd2e8CgYEA6d4HvU4nx8jWhFo4IDmb9lE6ccoG+6gUGSxkzQZUtfa+H/EsFlQv3GNGvXNQ/oQ3oAQQrFxfvOSQ51MXED2MOKluGqy7DSSkp2ocRfFU7wEbordU3rhfKMROsj1NYMj4anUWT4AnsVc8JezatKViWbXmwuyk1plovjaNWEFm4ccCgYA6nDUybP4EZlL5N+67O4NRmKXgXrqR6u0pxjBbzfO+OrkkYNWDW1V+6GKUIqvstSctLmpl4LPRmWctnIJDfHi+JR1JTSTflzK6lE5FdaMUwIRYvoFthMu5e482NWsOLpMsB1GuoGImVbwJKEBBCBBZcEa69kDW+kcDX9v1qcKQgwKBgQDkzNE7lpv6rHWa1P02IcaBDGUmcCW2zXCkVDdmEnyL7ZOCgpvEWKbecc4CiTBDYS1egruhNVqA3gkaF8Nnox9tS+2pcTYrHJ9uHrT8hKe4kJft8Hi60RxgMPZhEPKD7vqChHzIWLP8n0D8RaaOt4LqC7lxGL4IKdw8w/gy0QGLfwKBgQDN4POsfAgXieHkFZdOoc9++memQFgYQHVgfrepAw2MZxV+YX/75FkymHxKrONCAqFs7bS1u2GfPRpkpiYbyHmboAkBgK3AiUYExpBUs27ZjwP3FSNLYxT9Pe4f/tOXpmSpZnaiXvUJ16OPCBLRHf77+C8DQ8NLnVCkSGdW4/nd/w==";
+    var mMerchantNo1 = "703424";
+    //var privateKey2 = "MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDbODPX+TrymksM5+aRF3K5b/cDT+fDq5GKfgGlZO8MlgEG4UpOEh097UYIYrWEzBQs53MDn3dIwlMt4X+4FuKcECG3+drZ3Ehzh68qDak+q/2pIiEb0QfdCULY8Xz3TIoN0EKnCCVoHkHo3+Vel3uaUtlU74bnB0CCw1jGWdJOSeEpUiU5MjujjyzYbOVsz4AdzbmEfZFB8e+mSsM7zjcriyUponkMSXBKIiDQehKn0YLp39N2sJrpG/2SOcZnPh3wc/k6OtJP52CHVMDjrB4wTdf6njiqntGub+nuiIJDDGl+4HzahVfQ5IruMbWThRQzUC+KF0Q2tIFIMc0XuXfJAgMBAAECggEBALUXFmyg67shDkJZBzRwREs/XLQVvAT9o7reIIn6eSbSe4KtdO5NNG7FpQakVAKhe0Ek6PPjNWybao8KKrFt5kC5asFJ2yoBOLCHM4HvyxGEjoS7NtJ9uJs1XU1NH8hCKAEFOyo0JoJ+DEBNRHMBfA+dxP7O54fNi9L5gEpKRNp50ePm20H5m2rHRu6nhOloAJZA+jXog3Yc2283Bnjx1PwpkP8LZypC+TodIOx3aZMRoXYSz6BRia8ylar1tr2Y8oJoOV8ENWGp6z0tj/YH/Cwc9jYHlHJWcMdzkTmlohwAiJmsFjRAsn8ognhmHoDFplaWM7Zlof5AhNSDXRwdHYkCgYEA7/dL9f3M0ArdfutBmx67O1l48HsAUG/O8dX49oVoCZI+91C/NyQ0r1A6iu9qjSvmIPBmbIOeGH0kRbl4BwRGF1j1wVB2rgl5FFf5oYs6TPvgGR9losvd4Bk3UOsua9nUkpmHOE/6ONZYGo2PhpYRhTc5/pOMW7jEW0UgicJd2e8CgYEA6d4HvU4nx8jWhFo4IDmb9lE6ccoG+6gUGSxkzQZUtfa+H/EsFlQv3GNGvXNQ/oQ3oAQQrFxfvOSQ51MXED2MOKluGqy7DSSkp2ocRfFU7wEbordU3rhfKMROsj1NYMj4anUWT4AnsVc8JezatKViWbXmwuyk1plovjaNWEFm4ccCgYA6nDUybP4EZlL5N+67O4NRmKXgXrqR6u0pxjBbzfO+OrkkYNWDW1V+6GKUIqvstSctLmpl4LPRmWctnIJDfHi+JR1JTSTflzK6lE5FdaMUwIRYvoFthMu5e482NWsOLpMsB1GuoGImVbwJKEBBCBBZcEa69kDW+kcDX9v1qcKQgwKBgQDkzNE7lpv6rHWa1P02IcaBDGUmcCW2zXCkVDdmEnyL7ZOCgpvEWKbecc4CiTBDYS1egruhNVqA3gkaF8Nnox9tS+2pcTYrHJ9uHrT8hKe4kJft8Hi60RxgMPZhEPKD7vqChHzIWLP8n0D8RaaOt4LqC7lxGL4IKdw8w/gy0QGLfwKBgQDN4POsfAgXieHkFZdOoc9++memQFgYQHVgfrepAw2MZxV+YX/75FkymHxKrONCAqFs7bS1u2GfPRpkpiYbyHmboAkBgK3AiUYExpBUs27ZjwP3FSNLYxT9Pe4f/tOXpmSpZnaiXvUJ16OPCBLRHf77+C8DQ8NLnVCkSGdW4/nd/w==";
+
+    var mSign = "";
+    var urldata = "";
+
+    function pay() {
+        //mytext = mpayid.value;
+        //var testuuid = guid()
+        //console.log("uuid is " + testuuid);
+        //console.log("replace is " + testuuid.toString().replace(/-/g, ""));
+        var flag = $('input:radio:checked').val();
+        mMerchantNo = (flag == "0") ? mMerchantNo1: mMerchantNo2;
+
+        alert(mMerchantNo);
+        var msignTmp = mOpenId + "&" + mMerchantNo + "&" + mMerchantOrderNo
+                + "&" + mOrderAmount + "&" + mNotifyUrl + "&"
+                + mGoodsName + "&" + mAppId + "&" + mAppName;
+        console.log("msignTmp is " + msignTmp);
+
+        mSign = getRSACry(msignTmp);
+        console.log("msign is " + mSign);
+        alert(mSign);
+
+        var urldataTmp = "appId=" + mAppId + "&" +
+                "appName=" + mAppName + "&" +
+                "openId=" + mOpenId + "&" +
+                "packageName=" + mPackageName + "&" +
+                "goodsName=" + mGoodsName + "&" +
+                "orderAmount=" + mOrderAmount + "&" +
+                "merchantOrderNo=" + mMerchantOrderNo + "&" +
+                "notifyUrl=" + mNotifyUrl + "&" +
+                "merchantNo=" + mMerchantNo + "&" +
+                "sign=" + mSign;
+        urldata = "wifiwallet://sdp/payapi?" + urldataTmp;
+        console.log("urldata = " + urldata);
+        //window.location.href="wifiwallet://sdp/payapi?" + urldata;
+    }
+
+    //用于生成uuid
+    function S4() {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    }
+
+    function guid() {
+        return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+    }
+
+    function getRSACry(data) {
+        //logger("rsa data is " + data);
+        var encrypt = new JSEncrypt();
+        //logger("public key is" + globalConfig.publicKey);
+        encrypt.setPublicKey(privateKey);
+        var encrypted = encrypt.encrypt(data);
+        //logger("rsa result is " + encrypted);
+        return encrypted;
+    }
+
+    function initialize() {
+
+    }
+
+    $(document).ready(function () {
+        initialize();
+    })
+</script>
+</html>
